@@ -15,32 +15,35 @@
       background-color: #ffd699;
     }
     header {
-      background-color: #ffd699;
+      background-color: #ffbe66;
       text-align: center;
-      padding: 15px;
-      border-bottom: 2px solid #ffaa55;
+      padding: 15px 15px 10px 15px;
+      border-bottom: 1px solid #f0a848;
     }
     .domain-title {
       color: #e60000;
       font-weight: bold;
       font-style: italic;
-      font-size: 22px;
+      font-size: 21px;
+      margin-bottom: 10px;
     }
     .nav-bar {
       display: flex;
       align-items: center;
-      padding: 10px 20px;
+      padding: 5px 10px;
     }
     .hamburger {
-      font-size: 24px;
+      font-size: 28px;
       cursor: pointer;
-      margin-right: 20px;
+      margin-right: 25px;
+      color: #111;
+      line-height: 1;
     }
     .main-heading {
       color: #e60000;
       font-weight: bold;
       font-style: italic;
-      font-size: 24px;
+      font-size: 21px;
     }
     .main-heading span {
       color: #000;
@@ -70,29 +73,28 @@
     }
 
     .yellow-container {
-      background-color: #fff4a3;
-      padding: 20px;
-      min-height: 500px;
+      background-color: #fce883;
+      padding: 25px 25px 40px 25px;
+      min-height: 360px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
     .btn {
-      padding: 10px 20px;
-      border-radius: 12px;
+      padding: 12px 45px;
+      border-radius: 14px;
       font-weight: bold;
       border: none;
       cursor: pointer;
-      margin: 8px 0;
-      font-size: 15px;
+      margin: 15px 0;
+      font-size: 17px;
       transition: transform 0.1s ease;
     }
     .btn:active {
       transform: scale(0.97);
     }
-    .btn-green { background-color: #00b300; color: white; }
-    .btn-blue { background-color: #3399ff; color: #000; }
-    .btn-darkblue { background-color: #0000cc; color: white; }
+    .btn-green { background-color: #00a800; color: white; }
+    .btn-blue { background-color: #3399ff; color: #000; font-weight: bold; padding: 10px 20px; font-size: 15px; }
 
     /* Chart Table Styling */
     .chart-wrapper {
@@ -181,155 +183,200 @@
       100% { transform: scale(1); }
     }
 
-    /* Forms & Utilities */
+    .remove-lock-heading {
+      color: #5500a8;
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    /* Unlock Charges Styles */
+    .charges-container {
+      width: 100%;
+      max-width: 420px;
+      text-align: left;
+      padding: 0 10px;
+    }
+    .charges-heading {
+      color: #0000b3;
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .charge-item {
+      margin-bottom: 32px;
+    }
+    .charge-text-hi {
+      font-size: 18px;
+      color: #111;
+      margin-bottom: 4px;
+      font-weight: normal;
+    }
+    .charge-text-en {
+      font-size: 16px;
+      color: #222;
+      margin-bottom: 8px;
+    }
+    .charge-price {
+      font-size: 34px;
+      font-weight: bold;
+      color: #0000cc;
+      letter-spacing: 0.5px;
+    }
+    .qr-box {
+      background: #fff;
+      padding: 15px;
+      border: 4px solid #0000cc;
+      border-radius: 8px;
+      display: inline-block;
+      margin-top: 15px;
+      text-align: center;
+    }
+    .qr-box img {
+      width: 100%;
+      max-width: 240px;
+      height: auto;
+      display: block;
+    }
+
+    /* Payment Info Form Styles */
+    .payment-info-container {
+      width: 100%;
+      max-width: 420px;
+      text-align: left;
+      padding: 0 10px;
+    }
+    .payment-info-heading {
+      color: #0000b3;
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
     .form-group {
       width: 100%;
-      max-width: 350px;
-      margin-bottom: 15px;
+      margin-bottom: 22px;
       text-align: left;
     }
     .form-group label {
       display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
-      color: #000080;
+      font-weight: normal;
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #111111;
     }
     .form-group input[type="text"], 
-    .form-group input[type="tel"],
-    .form-group input[type="file"] {
+    .form-group input[type="tel"] {
       width: 100%;
-      padding: 10px;
+      padding: 14px 16px;
       border-radius: 6px;
-      border: 1px solid #ccc;
-      background-color: #f2f2f2;
+      border: 1px solid #bbb;
+      background-color: #ffffff;
+      font-size: 16px;
+      color: #333;
+      outline: none;
     }
-    .radio-group {
+    .form-group input::placeholder {
+      color: #888888;
+    }
+    .file-upload-box {
+      background-color: #ffffff;
+      border: 1px solid #bbb;
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .file-upload-box input[type="file"] {
+      display: none;
+    }
+    .choose-file-btn {
+      background-color: #e6e6e6;
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #333;
+    }
+    .file-chosen-text {
+      font-size: 15px;
+      color: #555;
+    }
+    .radio-stack {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin: 15px 0;
-      font-weight: bold;
-      font-size: 18px;
-      width: 100%;
-      max-width: 350px;
-      text-align: left;
+      gap: 14px;
+      margin: 15px 0 25px 0;
     }
-    .radio-group label {
-      background: #fff;
-      padding: 10px 14px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    /* Prices */
-    .price-box {
-      text-align: left;
-      width: 100%;
-      max-width: 350px;
-      margin-bottom: 15px;
-    }
-    .price-title { color: #0000cc; font-size: 24px; font-weight: bold; margin-bottom: 15px; }
-    .price-val { color: #0000cc; font-size: 26px; font-weight: bold; margin-bottom: 15px; }
-
-    /* Timer */
-    .timer {
-      font-size: 48px;
-      font-weight: bold;
-      margin: 20px 0;
-      color: #333;
-    }
-
-    /* Success Card */
-    .success-card {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 25px 20px;
-      width: 100%;
-      max-width: 380px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      text-align: center;
-      margin-bottom: 25px;
-    }
-    .check-circle {
-      width: 60px;
-      height: 60px;
-      border: 4px solid #00c853;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 15px auto;
-    }
-    .check-icon {
-      width: 25px;
-      height: 14px;
-      border-left: 4px solid #00c853;
-      border-bottom: 4px solid #00c853;
-      transform: rotate(-45deg);
-      margin-top: -4px;
-    }
-    .processed-title {
+    .radio-stack label {
       font-size: 22px;
-      font-weight: bold;
-      color: #222;
-      margin-bottom: 15px;
-      line-height: 1.2;
+      font-weight: normal;
+      color: #000;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
     }
-    .processed-sub {
-      color: #555;
-      font-size: 14px;
-      line-height: 1.4;
-      margin-bottom: 20px;
+    .radio-stack input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      accent-color: #000;
+      cursor: pointer;
     }
-    .notice-box {
-      background-color: #f1f3f5;
-      border-radius: 8px;
-      padding: 12px 15px;
-      color: #333;
-      font-size: 13.5px;
-      line-height: 1.4;
-      margin-bottom: 20px;
-    }
-    .pay-note {
-      color: #666;
-      font-size: 12px;
-      border-top: 1px solid #eee;
-      padding-top: 15px;
-    }
-    .alert-text-blue {
-      color: #000080;
-      font-weight: bold;
-      font-size: 16px;
+
+    /* Timer Screen Styles (Exact Match to Screenshot)[cite: 5] */
+    .timer-container {
+      width: 100%;
+      max-width: 420px;
       text-align: center;
-      max-width: 380px;
-      margin-bottom: 15px;
-      line-height: 1.4;
+      padding: 10px;
     }
-    .alert-text-red {
-      color: #cc0000;
+    .timer-instruction {
+      font-size: 20px;
+      color: #5500a8;
       font-weight: bold;
-      font-size: 15px;
-      text-align: center;
-      max-width: 380px;
+      line-height: 1.4;
       margin-bottom: 25px;
-      line-height: 1.4;
+    }
+    .timer-title {
+      font-size: 26px;
+      color: #444;
+      margin-bottom: 15px;
+      font-weight: normal;
+    }
+    .timer-clock {
+      font-size: 64px;
+      font-weight: bold;
+      color: #111;
+      margin: 15px 0 35px 0;
+      letter-spacing: 2px;
     }
 
     footer {
-      background-color: #ffd699;
+      background-color: #ffbe66;
       text-align: center;
-      padding: 20px;
-      border-top: 2px solid #ffaa55;
+      padding: 28px 15px;
+      margin-top: 14px;
     }
     .footer-text {
       color: #0000cc;
       font-style: italic;
       font-weight: bold;
-      line-height: 1.6;
+      font-size: 16px;
+      line-height: 2.1;
+    }
+    .footer-contact {
+      color: #0000cc;
+      font-style: italic;
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 2.1;
+      margin-top: 14px;
     }
 
     .page { display: none; }
@@ -382,107 +429,139 @@
         </table>
       </div>
 
-      <button class="btn btn-green" onclick="showPage('page-plans')">🔓 Unlock VIP Panel Chart</button>
+      <button class="btn btn-green" onclick="showPage('page-remove-lock')">Remove Lock 🔑</button>
       <button class="btn btn-blue" onclick="scrollToTop()">⬆ Go to Top</button>
     </div>
   </div>
 
-  <!-- PAGE 2: Plan Selection -->
-  <div id="page-plans" class="page">
-    <div class="pink-banner">SELECT VIP ACCESS</div>
+  <!-- PAGE 2: Remove Lock Form -->
+  <div id="page-remove-lock" class="page">
     <div class="yellow-container">
-      <div class="price-box">
-        <div class="price-title">Choose Your Plan:</div>
-      </div>
+      <div class="remove-lock-heading">Remove Lock 🔑</div>
 
-      <div class="radio-group">
-        <label>
-          <input type="radio" name="vipPlan" value="1 Week Access - ₹499" checked>
-          1 Week Access — ₹499
-        </label>
-        <label>
-          <input type="radio" name="vipPlan" value="1 Month Access - ₹1499">
-          1 Month Access — ₹1499
-        </label>
-        <label>
-          <input type="radio" name="vipPlan" value="Lifetime VIP Access - ₹2999">
-          Lifetime VIP — ₹2999
-        </label>
-      </div>
-
-      <button class="btn btn-green" onclick="proceedToVerification()">Proceed to Verification ➔</button>
-      <button class="btn btn-blue" onclick="showPage('page-chart')">⬅ Back to Chart</button>
-    </div>
-  </div>
-
-  <!-- PAGE 3: User Verification Form -->
-  <div id="page-verify" class="page">
-    <div class="pink-banner">PAYMENT VERIFICATION</div>
-    <div class="yellow-container">
-      <div class="price-box">
-        <div class="price-val" id="selected-plan-display">1 Week Access — ₹499</div>
-      </div>
-
-      <form id="verify-form" onsubmit="submitVerification(event)" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+      <form id="remove-lock-form" onsubmit="submitRemoveLock(event)" style="width: 100%; max-width: 340px; display: flex; flex-direction: column; align-items: center;">
         <div class="form-group">
-          <label for="userName">Full Name</label>
-          <input type="text" id="userName" placeholder="Enter your name" required>
+          <label for="rlName">Name*</label>
+          <input type="text" id="rlName" placeholder="Your name" required>
         </div>
 
         <div class="form-group">
-          <label for="userMobile">WhatsApp / Mobile Number</label>
-          <input type="tel" id="userMobile" placeholder="Enter 10-digit mobile number" required>
+          <label for="rlPhone">Phone Number*</label>
+          <input type="tel" id="rlPhone" placeholder="Your phone number" required>
         </div>
 
-        <div class="form-group">
-          <label for="txnId">Transaction / UTR ID</label>
-          <input type="text" id="txnId" placeholder="Enter 12-digit UTR number" required>
-        </div>
-
-        <div class="form-group">
-          <label for="paymentSlip">Upload Payment Screenshot</label>
-          <input type="file" id="paymentSlip" accept="image/*" required>
-        </div>
-
-        <button type="submit" class="btn btn-darkblue">Submit & Verify Now</button>
-        <button type="button" class="btn btn-blue" onclick="showPage('page-plans')">⬅ Change Plan</button>
+        <button type="submit" class="btn btn-green">Submit</button>
       </form>
     </div>
   </div>
 
-  <!-- PAGE 4: Verification Timer & Success Card -->
-  <div id="page-status" class="page">
-    <div class="pink-banner">VERIFICATION STATUS</div>
+  <!-- PAGE 3: Unlock Charges & QR Code -->
+  <div id="page-charges" class="page">
     <div class="yellow-container">
-      
-      <!-- Timer Section -->
-      <div id="timer-section" style="text-align: center;">
-        <div class="alert-text-blue">Please wait while we verify your transaction details...</div>
-        <div class="timer" id="countdown-timer">00:30</div>
-        <div class="alert-text-red">Do not refresh or close this page!</div>
-      </div>
+      <div class="charges-container">
+        <div class="charges-heading">Unlock Charges 🔑</div>
 
-      <!-- Success Card (Hidden until timer finishes) -->
-      <div id="success-section" style="display: none; flex-direction: column; align-items: center;">
-        <div class="success-card">
-          <div class="check-circle">
-            <div class="check-icon"></div>
-          </div>
-          <div class="processed-title">Request Submitted!</div>
-          <div class="processed-sub">
-            Your verification request for <b id="confirm-plan"></b> has been received.
-          </div>
-          <div class="notice-box">
-            Our team is validating your UTR ID. Locked chart cells will unlock automatically once approved.
-          </div>
-          <div class="pay-note">
-            Reference ID: <span id="ref-txn-id"></span>
+        <div class="charge-item">
+          <div class="charge-text-hi">3 दिन के लिए लॉक खोलने का चार्ज</div>
+          <div class="charge-text-en">(The Unlock Charge For 3 Days.)</div>
+          <div class="charge-price">₹ 950 /-</div>
+        </div>
+
+        <div class="charge-item">
+          <div class="charge-text-hi">10 दिन के लिए लॉक खोलने का चार्ज</div>
+          <div class="charge-text-en">(The Unlock Charge For 10 Days.)</div>
+          <div class="charge-price">₹ 1,400 /-</div>
+        </div>
+
+        <div class="charge-item">
+          <div class="charge-text-hi">30 दिन के लिए लॉक खोलने का चार्ज</div>
+          <div class="charge-text-en">(The Unlock Charge For 30 Days.)</div>
+          <div class="charge-price">₹ 1,900 /-</div>
+        </div>
+
+        <!-- QR Code Section -->
+        <div style="text-align: center; margin-top: 25px;">
+          <div class="qr-box">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=UPI://pay?pa=admin@upi" alt="Payment QR Code">
           </div>
         </div>
 
-        <button class="btn btn-green" onclick="showPage('page-chart')">Return to Golden Panel Chart</button>
+        <div style="text-align: center; margin-top: 30px;">
+          <button class="btn btn-green" onclick="showPage('page-payment-info')">Next: Payment Info ➔</button>
+          <br>
+          <button class="btn btn-blue" onclick="showPage('page-chart')" style="margin-top: 10px;">⬅ Back to Chart</button>
+        </div>
       </div>
+    </div>
+  </div>
 
+  <!-- PAGE 4: Payment Info Form -->
+  <div id="page-payment-info" class="page">
+    <div class="yellow-container">
+      <div class="payment-info-container">
+        <div class="payment-info-heading">Payment Info.</div>
+
+        <form id="payment-info-form" onsubmit="submitPaymentInfo(event)">
+          <div class="form-group">
+            <label>Upload Payment Screenshot*</label>
+            <div class="file-upload-box">
+              <label for="paymentSlip" class="choose-file-btn">Choose File</label>
+              <input type="file" id="paymentSlip" accept="image/*" onchange="updateFileName(this)" required>
+              <span class="file-chosen-text" id="file-chosen-label">No file chosen</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Amount (रकम)*</label>
+            <input type="text" placeholder="XXXX" required>
+          </div>
+
+          <div class="form-group">
+            <label>Select Unlock Days (दिन को चुनें)*</label>
+            <div class="radio-stack">
+              <label>
+                <input type="radio" name="unlockDays" value="30" required> 30 Day
+              </label>
+              <label>
+                <input type="radio" name="unlockDays" value="10"> 10 Day
+              </label>
+              <label>
+                <input type="radio" name="unlockDays" value="3"> 3 Day
+              </label>
+            </div>
+          </div>
+
+          <div style="text-align: center;">
+            <button type="submit" class="btn btn-green">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 5: 2-Minute Timer Page (Exact Match to Screenshot)[cite: 5] -->
+  <div id="page-timer" class="page">
+    <div class="yellow-container">
+      <div class="timer-container">
+        <div class="timer-instruction">After Verification is Complete Click On Submit Button</div>
+        <div class="timer-title">Please wait for verification</div>
+        <div class="timer-clock" id="countdown-clock">02:00</div>
+
+        <button type="button" class="btn btn-green" onclick="finishTimerSubmission()">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 6: Success / Final Completion Message -->
+  <div id="page-success" class="page">
+    <div class="yellow-container" style="text-align: center; padding-top: 40px;">
+      <div style="background: #fff; padding: 30px 20px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto;">
+        <div style="font-size: 50px; color: #00a800; margin-bottom: 15px;">✔</div>
+        <div style="font-size: 18px; font-weight: bold; color: #000080; line-height: 1.6; margin-bottom: 25px;">
+          Thank you, apka payment safal raha. Admin dwara check karne ke baad lock remove kar diya jayega.
+        </div>
+        <button class="btn btn-green" onclick="showPage('page-chart')" style="padding: 10px 25px; font-size: 15px;">Return to Chart</button>
+      </div>
     </div>
   </div>
 
@@ -490,7 +569,12 @@
   <footer>
     <div class="footer-text">
       GOLDENPANELCHART.COM<br>
-      All Rights Reserved © 2026
+      ALL RIGHTS RESERVED<br>
+      (2023-2026)
+    </div>
+    <div class="footer-contact">
+      Contact Admin<br>
+      admin@goldenpanelchart.com
     </div>
   </footer>
 
@@ -502,7 +586,7 @@
     const SHEET_NAME = "Sheet1";
     const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
 
-    // Red Jodi Check (Double digits like 11, 22, 33... or difference of 5 like 05, 50, 16, 61, 27, 72, 38, 83, 49, 94)
+    // Red Jodi Check
     function isRedJodi(jodi) {
       const clean = jodi.trim();
       if (clean.length !== 2 || isNaN(clean)) return false;
@@ -511,7 +595,7 @@
       return d1 === d2 || Math.abs(d1 - d2) === 5;
     }
 
-    // Format 3-digit Pana vertically (e.g., "257" -> "2<br>5<br>7")
+    // Format 3-digit Pana vertically
     function formatVerticalPana(pana) {
       const clean = (pana || "").trim();
       if (clean.includes("*")) return "*<br>*<br>*";
@@ -563,7 +647,6 @@
         const csvText = await response.text();
         const rows = parseCSV(csvText);
 
-        // 1. Pehle saari valid rows ko collect karein
         const validRows = [];
         for (let i = 1; i < rows.length; i++) {
           const cols = rows[i];
@@ -587,7 +670,7 @@
           return;
         }
 
-        // 2. Last filled cell ki exact position (rowIndex, dayIndex) dhoondein
+        // Find last filled cell
         let lastFilledRow = -1;
         let lastFilledDay = -1;
 
@@ -606,28 +689,23 @@
           }
         }
 
-        // 3. Agla cell jahan Lock lagana hai uski position calculate karein
+        // Calculate next cell for Lock
         let lockRow = -1;
         let lockDay = -1;
 
         if (lastFilledRow !== -1) {
           if (lastFilledDay < 5) {
-            // Isi hafte ke agle din par lock shift hoga
             lockRow = lastFilledRow;
             lockDay = lastFilledDay + 1;
           } else {
-            // Saturday (index 5) bhar gaya hai, toh agle hafte ke Monday (index 0) par lock jayega
             lockRow = lastFilledRow + 1;
             lockDay = 0;
           }
         } else {
-          // Agar sheet bilkul khali hai toh pehle cell par lock
           lockRow = 0;
           lockDay = 0;
         }
 
-        // Agar last row Saturday par khatam ho chuki hai aur sheet mein agli row abhi nahi bani hai,
-        // toh lock dikhane ke liye ek "Upcoming Week" row automatically neeche add kar dein
         if (lockRow >= validRows.length) {
           validRows.push({
             dateRange: "NEXT<br>WEEK",
@@ -635,7 +713,7 @@
           });
         }
 
-        // 4. Table HTML render karein
+        // Render Table HTML
         let html = "";
         for (let r = 0; r < validRows.length; r++) {
           const rowObj = validRows[r];
@@ -652,7 +730,7 @@
             if (isAutoLockCell || isExplicitStar) {
               html += `
                 <td>
-                  <span class="moving-lock" title="Locked - Click to Unlock" onclick="showPage('page-plans')">🔒</span>
+                  <span class="moving-lock" title="Remove Lock" onclick="showPage('page-remove-lock')">🔒</span>
                 </td>
               `;
             } else if (!cell.leftPana && !cell.jodi && !cell.rightPana) {
@@ -687,8 +765,18 @@
       }
     }
 
+    // Display chosen file name in upload box
+    function updateFileName(input) {
+      const label = document.getElementById("file-chosen-label");
+      if (input.files && input.files.length > 0) {
+        label.textContent = input.files[0].name;
+      } else {
+        label.textContent = "No file chosen";
+      }
+    }
+
     // ==========================================
-    // NAVIGATION & VERIFICATION WORKFLOW
+    // NAVIGATION & WORKFLOW WITH TIMER
     // ==========================================
     function showPage(pageId) {
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
@@ -704,49 +792,40 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    let chosenPlan = "1 Week Access - ₹499";
-    function proceedToVerification() {
-      const selectedRadio = document.querySelector('input[name="vipPlan"]:checked');
-      if (selectedRadio) {
-        chosenPlan = selectedRadio.value;
-      }
-      document.getElementById("selected-plan-display").textContent = chosenPlan;
-      showPage("page-verify");
+    function submitRemoveLock(e) {
+      e.preventDefault();
+      showPage('page-charges');
     }
 
-    let timerInterval = null;
-    function submitVerification(e) {
+    let countdownInterval = null;
+    function submitPaymentInfo(e) {
       e.preventDefault();
-      const txnId = document.getElementById("txnId").value.trim();
+      showPage('page-timer');
 
-      document.getElementById("confirm-plan").textContent = chosenPlan;
-      document.getElementById("ref-txn-id").textContent = txnId;
+      // Start 2-Minute (120 seconds) Countdown Timer
+      let totalSeconds = 120;
+      const clockDisplay = document.getElementById("countdown-clock");
 
-      // Reset timer & success visibility
-      document.getElementById("timer-section").style.display = "block";
-      document.getElementById("success-section").style.display = "none";
+      if (countdownInterval) clearInterval(countdownInterval);
 
-      showPage("page-status");
+      countdownInterval = setInterval(() => {
+        totalSeconds--;
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+        clockDisplay.textContent = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
 
-      let secondsLeft = 30;
-      const timerDisplay = document.getElementById("countdown-timer");
-      timerDisplay.textContent = "00:30";
-
-      if (timerInterval) clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
-        secondsLeft--;
-        const formattedSec = secondsLeft < 10 ? `0${secondsLeft}` : secondsLeft;
-        timerDisplay.textContent = `00:${formattedSec}`;
-
-        if (secondsLeft <= 0) {
-          clearInterval(timerInterval);
-          document.getElementById("timer-section").style.display = "none";
-          document.getElementById("success-section").style.display = "flex";
+        if (totalSeconds <= 0) {
+          clearInterval(countdownInterval);
+          showPage('page-success');
         }
       }, 1000);
     }
 
-    // Load chart immediately when page opens
+    function finishTimerSubmission() {
+      if (countdownInterval) clearInterval(countdownInterval);
+      showPage('page-success');
+    }
+
     window.addEventListener("DOMContentLoaded", loadChartData);
   </script>
 </body>
