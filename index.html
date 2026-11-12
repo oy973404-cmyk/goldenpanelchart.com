@@ -74,7 +74,7 @@
 
     .yellow-container {
       background-color: #fce883;
-      padding: 25px 25px 40px 25px;
+      padding: 15px 10px 40px 10px;
       min-height: 360px;
       display: flex;
       flex-direction: column;
@@ -96,15 +96,16 @@
     .btn-green { background-color: #00a800; color: white; }
     .btn-blue { background-color: #3399ff; color: #000; font-weight: bold; padding: 10px 20px; font-size: 15px; }
 
-    /* Chart Table Styling */
+    /* Chart Table Styling - Mobile Optimized with Smooth Horizontal Scroll */
     .chart-wrapper {
       width: 100%;
-      max-width: 550px;
+      max-width: 100%;
       background: #ffffff;
-      padding: 4px;
+      padding: 2px;
       border: 2px solid #87ceeb;
-      border-radius: 10px;
+      border-radius: 8px;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       margin: 15px 0;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
@@ -114,35 +115,38 @@
       text-align: center;
       padding: 8px;
       font-weight: bold;
-      font-size: 18px;
+      font-size: 16px;
       border-top-left-radius: 6px;
       border-top-right-radius: 6px;
     }
     table {
       width: 100%;
+      min-width: 420px;
       border-collapse: collapse;
       text-align: center;
       background: #ffffff;
     }
     th, td {
       border: 1px solid #87ceeb;
-      padding: 3px;
-      font-size: 12px;
+      padding: 2px 1px;
+      font-size: 11px;
       position: relative;
     }
     th.days-header {
       background-color: #ffff00;
       color: #000;
       font-weight: bold;
-      padding: 5px 2px;
+      padding: 6px 2px;
+      font-size: 12px;
     }
     .date-cell {
       color: #000;
       font-weight: bold;
-      font-size: 10px;
-      line-height: 1.2;
+      font-size: 9.5px;
+      line-height: 1.15;
       white-space: nowrap;
       background-color: #f9f9f9;
+      padding: 4px 2px;
     }
 
     /* Cell Grid Styling */
@@ -150,20 +154,20 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1px 2px;
+      padding: 1px;
       font-weight: bold;
-      min-width: 48px;
+      min-width: 38px;
     }
     .pana-left, .pana-right {
       display: flex;
       flex-direction: column;
-      font-size: 9px;
-      line-height: 1.05;
+      font-size: 8px;
+      line-height: 1.0;
     }
     .jodi-center {
-      font-size: 15px;
+      font-size: 13px;
       font-weight: bold;
-      padding: 0 2px;
+      padding: 0 1px;
     }
 
     /* Black / Red Digits */
@@ -172,7 +176,7 @@
 
     /* Animated Lock Icon */
     .moving-lock {
-      font-size: 18px;
+      font-size: 16px;
       animation: pulseLock 1.2s infinite ease-in-out;
       display: inline-block;
       cursor: pointer;
@@ -455,7 +459,7 @@
     </div>
   </div>
 
-  <!-- PAGE 3: Unlock Charges & QR Code (Using Local File Name: paytm-png.jpeg) -->
+  <!-- PAGE 3: Unlock Charges & QR Code -->
   <div id="page-charges" class="page">
     <div class="yellow-container">
       <div class="charges-container">
