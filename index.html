@@ -554,7 +554,7 @@
       return rows;
     }
 
-    // Fetch and Render Sheet Data
+    // Fetch and Render Sheet Data with Auto-Advancing Lock
     async function loadChartData() {
       const tbody = document.getElementById("chart-body");
       try {
@@ -563,48 +563,108 @@
         const csvText = await response.text();
         const rows = parseCSV(csvText);
 
-        let html = "";
-        let dataFound = false;
-
-        // Loop through rows (skip header and blank rows)
+        // 1. Pehle saari valid rows ko collect karein
+        const validRows = [];
         for (let i = 1; i < rows.length; i++) {
           const cols = rows[i];
           const dateRange = cols[0] ? cols[0].trim() : "";
-
-          // Skip empty rows or header duplicates
           if (!dateRange || dateRange.toLowerCase() === "range") continue;
 
-          dataFound = true;
-          // Format date range cleanly onto two lines ("30-12-24<br>to<br>04-01-25")
-          const formattedDate = dateRange.replace(/\s+to\s+/i, "<br>to<br>");
+          const days = [];
+          for (let day = 0; day < 6; day++) {
+            const baseIdx = 1 + day * 3;
+            days.push({
+              leftPana: (cols[baseIdx] || "").trim(),
+              jodi: (cols[baseIdx + 1] || "").trim(),
+              rightPana: (cols[baseIdx + 2] || "").trim()
+            });
+          }
+          validRows.push({ dateRange, days });
+        }
+
+        if (validRows.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="padding:20px; color:#cc0000;">No records found in Sheet1.</td></tr>`;
+          return;
+        }
+
+        // 2. Last filled cell ki exact position (rowIndex, dayIndex) dhoondein
+        let lastFilledRow = -1;
+        let lastFilledDay = -1;
+
+        for (let r = 0; r < validRows.length; r++) {
+          for (let d = 0; d < 6; d++) {
+            const cell = validRows[r].days[d];
+            const hasRealNumber =
+              (cell.leftPana && !cell.leftPana.includes("*")) ||
+              (cell.jodi && !cell.jodi.includes("*")) ||
+              (cell.rightPana && !cell.rightPana.includes("*"));
+
+            if (hasRealNumber) {
+              lastFilledRow = r;
+              lastFilledDay = d;
+            }
+          }
+        }
+
+        // 3. Agla cell jahan Lock lagana hai uski position calculate karein
+        let lockRow = -1;
+        let lockDay = -1;
+
+        if (lastFilledRow !== -1) {
+          if (lastFilledDay < 5) {
+            // Isi hafte ke agle din par lock shift hoga
+            lockRow = lastFilledRow;
+            lockDay = lastFilledDay + 1;
+          } else {
+            // Saturday (index 5) bhar gaya hai, toh agle hafte ke Monday (index 0) par lock jayega
+            lockRow = lastFilledRow + 1;
+            lockDay = 0;
+          }
+        } else {
+          // Agar sheet bilkul khali hai toh pehle cell par lock
+          lockRow = 0;
+          lockDay = 0;
+        }
+
+        // Agar last row Saturday par khatam ho chuki hai aur sheet mein agli row abhi nahi bani hai,
+        // toh lock dikhane ke liye ek "Upcoming Week" row automatically neeche add kar dein
+        if (lockRow >= validRows.length) {
+          validRows.push({
+            dateRange: "NEXT<br>WEEK",
+            days: Array.from({ length: 6 }, () => ({ leftPana: "", jodi: "", rightPana: "" }))
+          });
+        }
+
+        // 4. Table HTML render karein
+        let html = "";
+        for (let r = 0; r < validRows.length; r++) {
+          const rowObj = validRows[r];
+          const formattedDate = rowObj.dateRange.replace(/\s+to\s+/i, "<br>to<br>");
 
           html += `<tr>`;
           html += `<td class="date-cell">${formattedDate}</td>`;
 
-          // 6 Days (Mon to Sat): Each day takes 3 columns (L, J, R)
-          for (let day = 0; day < 6; day++) {
-            const baseIdx = 1 + day * 3;
-            const leftPana = cols[baseIdx] || "";
-            const jodi = cols[baseIdx + 1] || "";
-            const rightPana = cols[baseIdx + 2] || "";
+          for (let d = 0; d < 6; d++) {
+            const cell = rowObj.days[d];
+            const isAutoLockCell = (r === lockRow && d === lockDay);
+            const isExplicitStar = cell.jodi.includes("*") || cell.leftPana.includes("*") || cell.rightPana.includes("*");
 
-            // Check if locked (*** or ** in sheet)
-            if (jodi.includes("*") || leftPana.includes("*") || rightPana.includes("*")) {
+            if (isAutoLockCell || isExplicitStar) {
               html += `
                 <td>
                   <span class="moving-lock" title="Locked - Click to Unlock" onclick="showPage('page-plans')">🔒</span>
                 </td>
               `;
-            } else if (!leftPana && !jodi && !rightPana) {
+            } else if (!cell.leftPana && !cell.jodi && !cell.rightPana) {
               html += `<td>-</td>`;
             } else {
-              const colorClass = isRedJodi(jodi) ? "red" : "blk";
+              const colorClass = isRedJodi(cell.jodi) ? "red" : "blk";
               html += `
                 <td>
                   <div class="cell-container ${colorClass}">
-                    <div class="pana-left">${formatVerticalPana(leftPana)}</div>
-                    <div class="jodi-center">${jodi}</div>
-                    <div class="pana-right">${formatVerticalPana(rightPana)}</div>
+                    <div class="pana-left">${formatVerticalPana(cell.leftPana)}</div>
+                    <div class="jodi-center">${cell.jodi}</div>
+                    <div class="pana-right">${formatVerticalPana(cell.rightPana)}</div>
                   </div>
                 </td>
               `;
@@ -613,11 +673,8 @@
           html += `</tr>`;
         }
 
-        if (dataFound) {
-          tbody.innerHTML = html;
-        } else {
-          tbody.innerHTML = `<tr><td colspan="7" style="padding:20px; color:#cc0000;">No records found in Sheet1.</td></tr>`;
-        }
+        tbody.innerHTML = html;
+
       } catch (error) {
         console.error("Error fetching Google Sheet:", error);
         tbody.innerHTML = `
