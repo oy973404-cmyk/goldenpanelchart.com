@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GOLDEN PANEL CHART</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background-color: #ffd699;
+    }
+    header {
+      background-color: #ffd699;
+      text-align: center;
+      padding: 15px;
+      border-bottom: 2px solid #ffaa55;
+    }
+    .domain-title {
+      color: #e60000;
+      font-weight: bold;
+      font-style: italic;
+      font-size: 22px;
+    }
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+    }
+    .hamburger {
+      font-size: 24px;
+      cursor: pointer;
+      margin-right: 20px;
+    }
+    .main-heading {
+      color: #e60000;
+      font-weight: bold;
+      font-style: italic;
+      font-size: 24px;
+    }
+    .main-heading span {
+      color: #000;
+      font-style: italic;
+    }
+    .pink-banner {
+      background-color: #ff00ff;
+      color: #ffffff;
+      text-align: center;
+      padding: 8px;
+      font-weight: bold;
+      font-size: 22px;
+      margin: 15px 0;
+      letter-spacing: 2px;
+    }
+    .description {
+      color: #555555;
+      padding: 10px 20px;
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: normal;
+      text-align: center;
+    }
+    .description b {
+      color: #000080;
+      font-weight: bold;
+    }
+
+    .yellow-container {
+      background-color: #fff4a3;
+      padding: 20px;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .btn {
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      margin: 8px 0;
+      font-size: 15px;
+      transition: transform 0.1s ease;
+    }
+    .btn:active {
+      transform: scale(0.97);
+    }
+    .btn-green { background-color: #00b300; color: white; }
+    .btn-blue { background-color: #3399ff; color: #000; }
+    .btn-darkblue { background-color: #0000cc; color: white; }
+
+    /* Chart Table Styling */
+    .chart-wrapper {
+      width: 100%;
+      max-width: 550px;
+      background: #ffffff;
+      padding: 4px;
+      border: 2px solid #87ceeb;
+      border-radius: 10px;
+      overflow-x: auto;
+      margin: 15px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .chart-header {
+      background-color: #ff00ff;
+      color: white;
+      text-align: center;
+      padding: 8px;
+      font-weight: bold;
+      font-size: 18px;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      background: #ffffff;
+    }
+    th, td {
+      border: 1px solid #87ceeb;
+      padding: 3px;
+      font-size: 12px;
+      position: relative;
+    }
+    th.days-header {
+      background-color: #ffff00;
+      color: #000;
+      font-weight: bold;
+      padding: 5px 2px;
+    }
+    .date-cell {
+      color: #000;
+      font-weight: bold;
+      font-size: 10px;
+      line-height: 1.2;
+      white-space: nowrap;
+      background-color: #f9f9f9;
+    }
+
+    /* Cell Grid Styling */
+    .cell-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1px 2px;
+      font-weight: bold;
+      min-width: 48px;
+    }
+    .pana-left, .pana-right {
+      display: flex;
+      flex-direction: column;
+      font-size: 9px;
+      line-height: 1.05;
+    }
+    .jodi-center {
+      font-size: 15px;
+      font-weight: bold;
+      padding: 0 2px;
+    }
+
+    /* Black / Red Digits */
+    .blk .pana-left, .blk .pana-right, .blk .jodi-center { color: #000000; }
+    .red .pana-left, .red .pana-right, .red .jodi-center { color: #cc0000 !important; }
+
+    /* Animated Lock Icon */
+    .moving-lock {
+      font-size: 18px;
+      animation: pulseLock 1.2s infinite ease-in-out;
+      display: inline-block;
+      cursor: pointer;
+    }
+    @keyframes pulseLock {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.25); }
+      100% { transform: scale(1); }
+    }
+
+    /* Forms & Utilities */
+    .form-group {
+      width: 100%;
+      max-width: 350px;
+      margin-bottom: 15px;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #000080;
+    }
+    .form-group input[type="text"], 
+    .form-group input[type="tel"],
+    .form-group input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background-color: #f2f2f2;
+    }
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 15px 0;
+      font-weight: bold;
+      font-size: 18px;
+      width: 100%;
+      max-width: 350px;
+      text-align: left;
+    }
+    .radio-group label {
+      background: #fff;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Prices */
+    .price-box {
+      text-align: left;
+      width: 100%;
+      max-width: 350px;
+      margin-bottom: 15px;
+    }
+    .price-title { color: #0000cc; font-size: 24px; font-weight: bold; margin-bottom: 15px; }
+    .price-val { color: #0000cc; font-size: 26px; font-weight: bold; margin-bottom: 15px; }
+
+    /* Timer */
+    .timer {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 20px 0;
+      color: #333;
+    }
+
+    /* Success Card */
+    .success-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 25px 20px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .check-circle {
+      width: 60px;
+      height: 60px;
+      border: 4px solid #00c853;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px auto;
+    }
+    .check-icon {
+      width: 25px;
+      height: 14px;
+      border-left: 4px solid #00c853;
+      border-bottom: 4px solid #00c853;
+      transform: rotate(-45deg);
+      margin-top: -4px;
+    }
+    .processed-title {
+      font-size: 22px;
+      font-weight: bold;
+      color: #222;
+      margin-bottom: 15px;
+      line-height: 1.2;
+    }
+    .processed-sub {
+      color: #555;
+      font-size: 14px;
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
+    .notice-box {
+      background-color: #f1f3f5;
+      border-radius: 8px;
+      padding: 12px 15px;
+      color: #333;
+      font-size: 13.5px;
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
+    .pay-note {
+      color: #666;
+      font-size: 12px;
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+    }
+    .alert-text-blue {
+      color: #000080;
+      font-weight: bold;
+      font-size: 16px;
+      text-align: center;
+      max-width: 380px;
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+    .alert-text-red {
+      color: #cc0000;
+      font-weight: bold;
+      font-size: 15px;
+      text-align: center;
+      max-width: 380px;
+      margin-bottom: 25px;
+      line-height: 1.4;
+    }
+
+    footer {
+      background-color: #ffd699;
+      text-align: center;
+      padding: 20px;
+      border-top: 2px solid #ffaa55;
+    }
+    .footer-text {
+      color: #0000cc;
+      font-style: italic;
+      font-weight: bold;
+      line-height: 1.6;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="domain-title">GOLDENPANELCHART.COM</div>
+    <div class="nav-bar">
+      <div class="hamburger" onclick="showPage('page-chart')">☰</div>
+      <div class="main-heading">GOLDEN <span>PANEL CHART</span></div>
+    </div>
+  </header>
+
+  <!-- PAGE 1: Main Chart View -->
+  <div id="page-chart" class="page active">
+    <div class="pink-banner">GOLDEN PANEL CHART</div>
+    
+    <div class="description">
+      People get more from Game with a <b>GOLDEN PANEL CHART</b>. Most of the numbering games today offer a variety of platform that exceptionally well known, but without a doubt one of the most successful game is <b>GOLDEN PANEL CHART</b>.
+    </div>
+
+    <div class="yellow-container">
+      <button class="btn btn-blue" onclick="scrollToBottom()">⬇ Go to Bottom</button>
+
+      <div class="chart-wrapper">
+        <div class="chart-header">GOLDEN PANEL RECORD</div>
+        <table id="panel-table">
+          <thead>
+            <tr>
+              <th class="days-header">Date</th>
+              <th class="days-header">Mon</th>
+              <th class="days-header">Tue</th>
+              <th class="days-header">Wed</th>
+              <th class="days-header">Thu</th>
+              <th class="days-header">Fri</th>
+              <th class="days-header">Sat</th>
+            </tr>
+          </thead>
+          <tbody id="chart-body">
+            <tr>
+              <td colspan="7" style="padding: 25px; font-weight: bold; color: #000080;">
+                Loading Chart Data from Sheet...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <button class="btn btn-green" onclick="showPage('page-plans')">🔓 Unlock VIP Panel Chart</button>
+      <button class="btn btn-blue" onclick="scrollToTop()">⬆ Go to Top</button>
+    </div>
+  </div>
+
+  <!-- PAGE 2: Plan Selection -->
+  <div id="page-plans" class="page">
+    <div class="pink-banner">SELECT VIP ACCESS</div>
+    <div class="yellow-container">
+      <div class="price-box">
+        <div class="price-title">Choose Your Plan:</div>
+      </div>
+
+      <div class="radio-group">
+        <label>
+          <input type="radio" name="vipPlan" value="1 Week Access - ₹499" checked>
+          1 Week Access — ₹499
+        </label>
+        <label>
+          <input type="radio" name="vipPlan" value="1 Month Access - ₹1499">
+          1 Month Access — ₹1499
+        </label>
+        <label>
+          <input type="radio" name="vipPlan" value="Lifetime VIP Access - ₹2999">
+          Lifetime VIP — ₹2999
+        </label>
+      </div>
+
+      <button class="btn btn-green" onclick="proceedToVerification()">Proceed to Verification ➔</button>
+      <button class="btn btn-blue" onclick="showPage('page-chart')">⬅ Back to Chart</button>
+    </div>
+  </div>
+
+  <!-- PAGE 3: User Verification Form -->
+  <div id="page-verify" class="page">
+    <div class="pink-banner">PAYMENT VERIFICATION</div>
+    <div class="yellow-container">
+      <div class="price-box">
+        <div class="price-val" id="selected-plan-display">1 Week Access — ₹499</div>
+      </div>
+
+      <form id="verify-form" onsubmit="submitVerification(event)" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <div class="form-group">
+          <label for="userName">Full Name</label>
+          <input type="text" id="userName" placeholder="Enter your name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="userMobile">WhatsApp / Mobile Number</label>
+          <input type="tel" id="userMobile" placeholder="Enter 10-digit mobile number" required>
+        </div>
+
+        <div class="form-group">
+          <label for="txnId">Transaction / UTR ID</label>
+          <input type="text" id="txnId" placeholder="Enter 12-digit UTR number" required>
+        </div>
+
+        <div class="form-group">
+          <label for="paymentSlip">Upload Payment Screenshot</label>
+          <input type="file" id="paymentSlip" accept="image/*" required>
+        </div>
+
+        <button type="submit" class="btn btn-darkblue">Submit & Verify Now</button>
+        <button type="button" class="btn btn-blue" onclick="showPage('page-plans')">⬅ Change Plan</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PAGE 4: Verification Timer & Success Card -->
+  <div id="page-status" class="page">
+    <div class="pink-banner">VERIFICATION STATUS</div>
+    <div class="yellow-container">
+      
+      <!-- Timer Section -->
+      <div id="timer-section" style="text-align: center;">
+        <div class="alert-text-blue">Please wait while we verify your transaction details...</div>
+        <div class="timer" id="countdown-timer">00:30</div>
+        <div class="alert-text-red">Do not refresh or close this page!</div>
+      </div>
+
+      <!-- Success Card (Hidden until timer finishes) -->
+      <div id="success-section" style="display: none; flex-direction: column; align-items: center;">
+        <div class="success-card">
+          <div class="check-circle">
+            <div class="check-icon"></div>
+          </div>
+          <div class="processed-title">Request Submitted!</div>
+          <div class="processed-sub">
+            Your verification request for <b id="confirm-plan"></b> has been received.
+          </div>
+          <div class="notice-box">
+            Our team is validating your UTR ID. Locked chart cells will unlock automatically once approved.
+          </div>
+          <div class="pay-note">
+            Reference ID: <span id="ref-txn-id"></span>
+          </div>
+        </div>
+
+        <button class="btn btn-green" onclick="showPage('page-chart')">Return to Golden Panel Chart</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-text">
+      GOLDENPANELCHART.COM<br>
+      All Rights Reserved © 2026
+    </div>
+  </footer>
+
+  <script>
+    // ==========================================
+    // GOOGLE SHEET CONFIGURATION
+    // ==========================================
+    const SHEET_ID = "1z7pEP9CAcp5xozZR_hPVzsEBEYrzQ8gbYusHpfWYBxQ";
+    const SHEET_NAME = "Sheet1";
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
+
+    // Red Jodi Check (Double digits like 11, 22, 33... or difference of 5 like 05, 50, 16, 61, 27, 72, 38, 83, 49, 94)
+    function isRedJodi(jodi) {
+      const clean = jodi.trim();
+      if (clean.length !== 2 || isNaN(clean)) return false;
+      const d1 = parseInt(clean[0], 10);
+      const d2 = parseInt(clean[1], 10);
+      return d1 === d2 || Math.abs(d1 - d2) === 5;
+    }
+
+    // Format 3-digit Pana vertically (e.g., "257" -> "2<br>5<br>7")
+    function formatVerticalPana(pana) {
+      const clean = (pana || "").trim();
+      if (clean.includes("*")) return "*<br>*<br>*";
+      return clean.split("").join("<br>");
+    }
+
+    // Parse CSV text cleanly handling quotes
+    function parseCSV(text) {
+      const rows = [];
+      let currentRow = [];
+      let currentVal = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (char === '"' && inQuotes && nextChar === '"') {
+          currentVal += '"';
+          i++;
+        } else if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          currentRow.push(currentVal.trim());
+          currentVal = "";
+        } else if ((char === '\n' || (char === '\r' && nextChar === '\n')) && !inQuotes) {
+          if (char === '\r') i++;
+          currentRow.push(currentVal.trim());
+          rows.push(currentRow);
+          currentRow = [];
+          currentVal = "";
+        } else {
+          currentVal += char;
+        }
+      }
+      if (currentVal || currentRow.length > 0) {
+        currentRow.push(currentVal.trim());
+        rows.push(currentRow);
+      }
+      return rows;
+    }
+
+    // Fetch and Render Sheet Data
+    async function loadChartData() {
+      const tbody = document.getElementById("chart-body");
+      try {
+        const response = await fetch(CSV_URL);
+        if (!response.ok) throw new Error("Network response was not ok");
+        const csvText = await response.text();
+        const rows = parseCSV(csvText);
+
+        let html = "";
+        let dataFound = false;
+
+        // Loop through rows (skip header and blank rows)
+        for (let i = 1; i < rows.length; i++) {
+          const cols = rows[i];
+          const dateRange = cols[0] ? cols[0].trim() : "";
+
+          // Skip empty rows or header duplicates
+          if (!dateRange || dateRange.toLowerCase() === "range") continue;
+
+          dataFound = true;
+          // Format date range cleanly onto two lines ("30-12-24<br>to<br>04-01-25")
+          const formattedDate = dateRange.replace(/\s+to\s+/i, "<br>to<br>");
+
+          html += `<tr>`;
+          html += `<td class="date-cell">${formattedDate}</td>`;
+
+          // 6 Days (Mon to Sat): Each day takes 3 columns (L, J, R)
+          for (let day = 0; day < 6; day++) {
+            const baseIdx = 1 + day * 3;
+            const leftPana = cols[baseIdx] || "";
+            const jodi = cols[baseIdx + 1] || "";
+            const rightPana = cols[baseIdx + 2] || "";
+
+            // Check if locked (*** or ** in sheet)
+            if (jodi.includes("*") || leftPana.includes("*") || rightPana.includes("*")) {
+              html += `
+                <td>
+                  <span class="moving-lock" title="Locked - Click to Unlock" onclick="showPage('page-plans')">🔒</span>
+                </td>
+              `;
+            } else if (!leftPana && !jodi && !rightPana) {
+              html += `<td>-</td>`;
+            } else {
+              const colorClass = isRedJodi(jodi) ? "red" : "blk";
+              html += `
+                <td>
+                  <div class="cell-container ${colorClass}">
+                    <div class="pana-left">${formatVerticalPana(leftPana)}</div>
+                    <div class="jodi-center">${jodi}</div>
+                    <div class="pana-right">${formatVerticalPana(rightPana)}</div>
+                  </div>
+                </td>
+              `;
+            }
+          }
+          html += `</tr>`;
+        }
+
+        if (dataFound) {
+          tbody.innerHTML = html;
+        } else {
+          tbody.innerHTML = `<tr><td colspan="7" style="padding:20px; color:#cc0000;">No records found in Sheet1.</td></tr>`;
+        }
+      } catch (error) {
+        console.error("Error fetching Google Sheet:", error);
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="padding: 20px; color: #cc0000; font-weight: bold;">
+              Data load nahi ho paya. Kripya check karein ki Google Sheet "Anyone with the link can view" par set hai.
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // ==========================================
+    // NAVIGATION & VERIFICATION WORKFLOW
+    // ==========================================
+    function showPage(pageId) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.getElementById(pageId).classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function scrollToBottom() {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    let chosenPlan = "1 Week Access - ₹499";
+    function proceedToVerification() {
+      const selectedRadio = document.querySelector('input[name="vipPlan"]:checked');
+      if (selectedRadio) {
+        chosenPlan = selectedRadio.value;
+      }
+      document.getElementById("selected-plan-display").textContent = chosenPlan;
+      showPage("page-verify");
+    }
+
+    let timerInterval = null;
+    function submitVerification(e) {
+      e.preventDefault();
+      const txnId = document.getElementById("txnId").value.trim();
+
+      document.getElementById("confirm-plan").textContent = chosenPlan;
+      document.getElementById("ref-txn-id").textContent = txnId;
+
+      // Reset timer & success visibility
+      document.getElementById("timer-section").style.display = "block";
+      document.getElementById("success-section").style.display = "none";
+
+      showPage("page-status");
+
+      let secondsLeft = 30;
+      const timerDisplay = document.getElementById("countdown-timer");
+      timerDisplay.textContent = "00:30";
+
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        secondsLeft--;
+        const formattedSec = secondsLeft < 10 ? `0${secondsLeft}` : secondsLeft;
+        timerDisplay.textContent = `00:${formattedSec}`;
+
+        if (secondsLeft <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById("timer-section").style.display = "none";
+          document.getElementById("success-section").style.display = "flex";
+        }
+      }, 1000);
+    }
+
+    // Load chart immediately when page opens
+    window.addEventListener("DOMContentLoaded", loadChartData);
+  </script>
+</body>
+</html>
