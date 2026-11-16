@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GOLDEN PANEL CHART</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background-color: #ffd699;
+    }
+    header {
+      background-color: #ffbe66;
+      text-align: center;
+      padding: 15px 15px 10px 15px;
+      border-bottom: 1px solid #f0a848;
+    }
+    .domain-title {
+      color: #e60000;
+      font-weight: bold;
+      font-style: italic;
+      font-size: 21px;
+      margin-bottom: 10px;
+    }
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      padding: 5px 10px;
+    }
+    .hamburger {
+      font-size: 28px;
+      cursor: pointer;
+      margin-right: 25px;
+      color: #111;
+      line-height: 1;
+    }
+    .main-heading {
+      color: #e60000;
+      font-weight: bold;
+      font-style: italic;
+      font-size: 21px;
+    }
+    .main-heading span {
+      color: #000;
+      font-style: italic;
+    }
+    .pink-banner {
+      background-color: #ff00ff;
+      color: #ffffff;
+      text-align: center;
+      padding: 8px;
+      font-weight: bold;
+      font-size: 22px;
+      margin: 15px 0;
+      letter-spacing: 2px;
+    }
+    .description {
+      color: #555555;
+      padding: 10px 20px;
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: normal;
+      text-align: center;
+    }
+    .description b {
+      color: #000080;
+      font-weight: bold;
+    }
+
+    .yellow-container {
+      background-color: #fce883;
+      padding: 15px 5px 40px 5px;
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .btn {
+      padding: 12px 35px;
+      border-radius: 14px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      margin: 10px 0;
+      font-size: 17px;
+      transition: transform 0.1s ease;
+    }
+    .btn:active {
+      transform: scale(0.97);
+    }
+    .btn-green { background-color: #00a800; color: white; }
+    .btn-blue { background-color: #3399ff; color: #000; font-weight: bold; padding: 10px 20px; font-size: 15px; }
+
+    /* Chart Table Styling - Extremely Compact for Mobile */
+    .chart-wrapper {
+      width: 100%;
+      max-width: 100%;
+      background: #ffffff;
+      padding: 1px;
+      border: 2px solid #87ceeb;
+      border-radius: 6px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 15px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .chart-header {
+      background-color: #ff00ff;
+      color: white;
+      text-align: center;
+      padding: 8px;
+      font-weight: bold;
+      font-size: 16px;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    }
+    table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      text-align: center;
+      background: #ffffff;
+    }
+    
+    col.col-date { width: 14%; }
+    col.col-day { width: 14.3%; }
+
+    th, td {
+      border: 1px solid #87ceeb;
+      padding: 1px;
+      font-size: 10.5px;
+      position: relative;
+      overflow: hidden;
+      word-break: break-all;
+    }
+    th.days-header {
+      background-color: #ffff00;
+      color: #000;
+      font-weight: bold;
+      padding: 5px 1px;
+      font-size: 11.5px;
+    }
+    .date-cell {
+      color: #000;
+      font-weight: bold;
+      font-size: 8.5px;
+      line-height: 1.1;
+      background-color: #f9f9f9;
+      padding: 3px 1px;
+      word-break: normal;
+    }
+
+    .cell-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0px 1px;
+      font-weight: bold;
+    }
+    .pana-left, .pana-right {
+      display: flex;
+      flex-direction: column;
+      font-size: 7.5px;
+      line-height: 1.0;
+    }
+    .jodi-center {
+      font-size: 12px;
+      font-weight: bold;
+      padding: 0 1px;
+    }
+
+    .blk .pana-left, .blk .pana-right, .blk .jodi-center { color: #000000; }
+    .red .pana-left, .red .pana-right, .red .jodi-center { color: #cc0000 !important; }
+
+    /* Red Star Styling */
+    .red-star-cell {
+      color: #cc0000 !important;
+      font-weight: bold;
+    }
+
+    .moving-lock {
+      font-size: 15px;
+      animation: pulseLock 1.2s infinite ease-in-out;
+      display: inline-block;
+      cursor: pointer;
+    }
+    @keyframes pulseLock {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.25); }
+      100% { transform: scale(1); }
+    }
+
+    .remove-lock-heading {
+      color: #5500a8;
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .charges-container {
+      width: 100%;
+      max-width: 420px;
+      text-align: left;
+      padding: 0 10px;
+    }
+    .charges-heading {
+      color: #0000b3;
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .charge-item {
+      margin-bottom: 32px;
+    }
+    .charge-text-hi {
+      font-size: 18px;
+      color: #111;
+      margin-bottom: 4px;
+      font-weight: normal;
+    }
+    .charge-text-en {
+      font-size: 16px;
+      color: #222;
+      margin-bottom: 8px;
+    }
+    .charge-price {
+      font-size: 34px;
+      font-weight: bold;
+      color: #0000cc;
+      letter-spacing: 0.5px;
+    }
+    .qr-box {
+      background: #fff;
+      padding: 15px;
+      border: 4px solid #0000cc;
+      border-radius: 8px;
+      display: inline-block;
+      margin-top: 15px;
+      text-align: center;
+    }
+    .qr-box img {
+      width: 100%;
+      max-width: 240px;
+      height: auto;
+      display: block;
+    }
+
+    .payment-info-container {
+      width: 100%;
+      max-width: 420px;
+      text-align: left;
+      padding: 0 10px;
+    }
+    .payment-info-heading {
+      color: #0000b3;
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
+    .form-group {
+      width: 100%;
+      margin-bottom: 22px;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      font-weight: normal;
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #111111;
+    }
+    .form-group input[type="text"], 
+    .form-group input[type="tel"] {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 6px;
+      border: 1px solid #bbb;
+      background-color: #ffffff;
+      font-size: 16px;
+      color: #333;
+      outline: none;
+    }
+    .form-group input::placeholder {
+      color: #888888;
+    }
+    .file-upload-box {
+      background-color: #ffffff;
+      border: 1px solid #bbb;
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .file-upload-box input[type="file"] {
+      display: none;
+    }
+    .choose-file-btn {
+      background-color: #e6e6e6;
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #333;
+    }
+    .file-chosen-text {
+      font-size: 15px;
+      color: #555;
+    }
+    .radio-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin: 15px 0 25px 0;
+    }
+    .radio-stack label {
+      font-size: 22px;
+      font-weight: normal;
+      color: #000;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+    .radio-stack input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      accent-color: #000;
+      cursor: pointer;
+    }
+
+    .timer-container {
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      padding: 10px;
+    }
+    .timer-instruction {
+      font-size: 20px;
+      color: #5500a8;
+      font-weight: bold;
+      line-height: 1.4;
+      margin-bottom: 25px;
+    }
+    .timer-title {
+      font-size: 26px;
+      color: #444;
+      margin-bottom: 15px;
+      font-weight: normal;
+    }
+    .timer-clock {
+      font-size: 64px;
+      font-weight: bold;
+      color: #111;
+      margin: 15px 0 35px 0;
+      letter-spacing: 2px;
+    }
+
+    footer {
+      background-color: #ffbe66;
+      text-align: center;
+      padding: 28px 15px;
+      margin-top: 14px;
+    }
+    .footer-text {
+      color: #0000cc;
+      font-style: italic;
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 2.1;
+    }
+    .footer-contact {
+      color: #0000cc;
+      font-style: italic;
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 2.1;
+      margin-top: 14px;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="domain-title">GOLDENPANELCHART.COM</div>
+    <div class="nav-bar">
+      <div class="hamburger" onclick="navigateTo('page-chart')">☰</div>
+      <div class="main-heading">GOLDEN <span>PANEL CHART</span></div>
+    </div>
+  </header>
+
+  <!-- PAGE 1: Main Chart View -->
+  <div id="page-chart" class="page active">
+    <div class="pink-banner">GOLDEN PANEL CHART</div>
+    
+    <div class="description">
+      People get more from Game with a <b>GOLDEN PANEL CHART</b>. Most of the numbering games today offer a variety of platform that exceptionally well known, but without a doubt one of the most successful game is <b>GOLDEN PANEL CHART</b>.
+    </div>
+
+    <div class="yellow-container">
+      <button class="btn btn-blue" onclick="scrollToBottom()">⬇ Go to Bottom</button>
+
+      <div class="chart-wrapper">
+        <div class="chart-header">GOLDEN PANEL RECORD</div>
+        <table id="panel-table">
+          <colgroup>
+            <col class="col-date">
+            <col class="col-day">
+            <col class="col-day">
+            <col class="col-day">
+            <col class="col-day">
+            <col class="col-day">
+            <col class="col-day">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="days-header">Date</th>
+              <th class="days-header">Mon</th>
+              <th class="days-header">Tue</th>
+              <th class="days-header">Wed</th>
+              <th class="days-header">Thu</th>
+              <th class="days-header">Fri</th>
+              <th class="days-header">Sat</th>
+            </tr>
+          </thead>
+          <tbody id="chart-body">
+            <tr>
+              <td colspan="7" style="padding: 25px; font-weight: bold; color: #000080;">
+                Loading Chart Data from Sheet...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <button class="btn btn-green" onclick="navigateTo('page-remove-lock')">Remove Lock 🔑</button>
+      <button class="btn btn-blue" onclick="scrollToTop()">⬆ Go to Top</button>
+    </div>
+  </div>
+
+  <!-- PAGE 2: Remove Lock Form -->
+  <div id="page-remove-lock" class="page">
+    <div class="yellow-container">
+      <div class="remove-lock-heading">Remove Lock 🔑</div>
+
+      <form id="remove-lock-form" onsubmit="submitRemoveLock(event)" style="width: 100%; max-width: 340px; display: flex; flex-direction: column; align-items: center;">
+        <div class="form-group">
+          <label for="rlName">Name*</label>
+          <input type="text" id="rlName" placeholder="Your name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="rlPhone">Phone Number*</label>
+          <input type="tel" id="rlPhone" placeholder="Your phone number" required>
+        </div>
+
+        <button type="submit" class="btn btn-green">Submit</button>
+        <button type="button" class="btn btn-blue" onclick="navigateTo('page-chart')" style="margin-top: 15px;">⬅ Back to Chart</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PAGE 3: Unlock Charges & QR Code -->
+  <div id="page-charges" class="page">
+    <div class="yellow-container">
+      <div class="charges-container">
+        <div class="charges-heading">Unlock Charges 🔑</div>
+
+        <div class="charge-item">
+          <div class="charge-text-hi">3 दिन के लिए लॉक खोलने का चार्ज</div>
+          <div class="charge-text-en">(The Unlock Charge For 3 Days.)</div>
+          <div class="charge-price">₹ 950 /-</div>
+        </div>
+
+        <div class="charge-item">
+          <div class="charge-text-hi">10 दिन के लिए लॉक खोलने का चार्ज</div>
+          <div class="charge-text-en">(The Unlock Charge For 10 Days.)</div>
+          <div class="charge-price">₹ 1,400 /-</div>
+        </div>
+
+        <div class="charge-item">
+          <div class="charge-text-hi">30 दिन के लिए लॉक खोलने का चार्ज</div>
+          <div class="charge-text-en">(The Unlock Charge For 30 Days.)</div>
+          <div class="charge-price">₹ 1,900 /-</div>
+        </div>
+
+        <!-- Scanner Image using local file name -->
+        <div style="text-align: center; margin-top: 25px;">
+          <div class="qr-box">
+            <img src="paytm-png.jpeg" alt="Payment QR Code">
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+          <button class="btn btn-green" onclick="navigateTo('page-payment-info')">Next: Payment Info ➔</button>
+          <br>
+          <button class="btn btn-blue" onclick="navigateTo('page-remove-lock')" style="margin-top: 10px;">⬅ Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 4: Payment Info Form -->
+  <div id="page-payment-info" class="page">
+    <div class="yellow-container">
+      <div class="payment-info-container">
+        <div class="payment-info-heading">Payment Info.</div>
+
+        <form id="payment-info-form" onsubmit="submitPaymentInfo(event)">
+          <div class="form-group">
+            <label>Upload Payment Screenshot*</label>
+            <div class="file-upload-box">
+              <label for="paymentSlip" class="choose-file-btn">Choose File</label>
+              <input type="file" id="paymentSlip" accept="image/*" onchange="updateFileName(this)" required>
+              <span class="file-chosen-text" id="file-chosen-label">No file chosen</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Amount (रकम)*</label>
+            <input type="text" placeholder="XXXX" required>
+          </div>
+
+          <div class="form-group">
+            <label>Select Unlock Days (दिन को चुनें)*</label>
+            <div class="radio-stack">
+              <label>
+                <input type="radio" name="unlockDays" value="30" required> 30 Day
+              </label>
+              <label>
+                <input type="radio" name="unlockDays" value="10"> 10 Day
+              </label>
+              <label>
+                <input type="radio" name="unlockDays" value="3"> 3 Day
+              </label>
+            </div>
+          </div>
+
+          <div style="text-align: center; display: flex; gap: 10px; justify-content: center;">
+            <button type="submit" class="btn btn-green">Submit</button>
+            <button type="button" class="btn btn-blue" onclick="navigateTo('page-charges')" style="margin-top: 15px;">⬅ Back</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 5: 2-Minute Timer Page -->
+  <div id="page-timer" class="page">
+    <div class="yellow-container">
+      <div class="timer-container">
+        <div class="timer-instruction">After Verification is Complete Click On Submit Button</div>
+        <div class="timer-title">Please wait for verification</div>
+        <div class="timer-clock" id="countdown-clock">02:00</div>
+
+        <button type="button" class="btn btn-green" onclick="finishTimerSubmission()">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 6: Success / Final Completion Message -->
+  <div id="page-success" class="page">
+    <div class="yellow-container" style="text-align: center; padding-top: 40px;">
+      <div style="background: #fff; padding: 30px 20px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto;">
+        <div style="font-size: 50px; color: #00a800; margin-bottom: 15px;">✔</div>
+        <div style="font-size: 18px; font-weight: bold; color: #000080; line-height: 1.6; margin-bottom: 25px;">
+          Thank you, apka payment safal raha. Admin dwara check karne ke baad lock remove kar diya jayega.
+        </div>
+        <button class="btn btn-green" onclick="navigateTo('page-chart')" style="padding: 10px 25px; font-size: 15px;">Return to Chart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-text">
+      GOLDENPANELCHART.COM<br>
+      ALL RIGHTS RESERVED<br>
+      (2023-2026)
+    </div>
+    <div class="footer-contact">
+      Contact Admin<br>
+      admin@goldenpanelchart.com
+    </div>
+  </footer>
+
+  <script>
+    // ==========================================
+    // GOOGLE SHEET CONFIGURATION
+    // ==========================================
+    const SHEET_ID = "1z7pEP9CAcp5xozZR_hPVzsEBEYrzQ8gbYusHpfWYBxQ";
+    const SHEET_NAME = "Sheet1";
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
+
+    // Red Jodi Check
+    function isRedJodi(jodi) {
+      const clean = jodi.trim();
+      if (clean.length !== 2 || isNaN(clean)) return false;
+      const d1 = parseInt(clean[0], 10);
+      const d2 = parseInt(clean[1], 10);
+      return d1 === d2 || Math.abs(d1 - d2) === 5;
+    }
+
+    // Format 3-digit Pana vertically
+    function formatVerticalPana(pana) {
+      const clean = (pana || "").trim();
+      if (clean.includes("*")) return "*<br>*<br>*";
+      return clean.split("").join("<br>");
+    }
+
+    // Parse CSV text cleanly handling quotes
+    function parseCSV(text) {
+      const rows = [];
+      let currentRow = [];
+      let currentVal = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (char === '"' && inQuotes && nextChar === '"') {
+          currentVal += '"';
+          i++;
+        } else if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          currentRow.push(currentVal.trim());
+          currentVal = "";
+        } else if ((char === '\n' || (char === '\r' && nextChar === '\n')) && !inQuotes) {
+          if (char === '\r') i++;
+          currentRow.push(currentVal.trim());
+          rows.push(currentRow);
+          currentRow = [];
+          currentVal = "";
+        } else {
+          currentVal += char;
+        }
+      }
+      if (currentVal || currentRow.length > 0) {
+        currentRow.push(currentVal.trim());
+        rows.push(currentRow);
+      }
+      return rows;
+    }
+
+    // Fetch and Render Sheet Data with Auto-Advancing Lock & Red Stars
+    async function loadChartData() {
+      const tbody = document.getElementById("chart-body");
+      try {
+        const response = await fetch(CSV_URL);
+        if (!response.ok) throw new Error("Network response was not ok");
+        const csvText = await response.text();
+        const rows = parseCSV(csvText);
+
+        const validRows = [];
+        for (let i = 1; i < rows.length; i++) {
+          const cols = rows[i];
+          const dateRange = cols[0] ? cols[0].trim() : "";
+          if (!dateRange || dateRange.toLowerCase() === "range") continue;
+
+          const days = [];
+          for (let day = 0; day < 6; day++) {
+            const baseIdx = 1 + day * 3;
+            days.push({
+              leftPana: (cols[baseIdx] || "").trim(),
+              jodi: (cols[baseIdx + 1] || "").trim(),
+              rightPana: (cols[baseIdx + 2] || "").trim()
+            });
+          }
+          validRows.push({ dateRange, days });
+        }
+
+        if (validRows.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="padding:20px; color:#cc0000;">No records found in Sheet1.</td></tr>`;
+          return;
+        }
+
+        // Find last filled cell (considering both numbers and explicit stars as filled entries)
+        let lastFilledRow = -1;
+        let lastFilledDay = -1;
+
+        for (let r = 0; r < validRows.length; r++) {
+          for (let d = 0; d < 6; d++) {
+            const cell = validRows[r].days[d];
+            const hasEntry =
+              cell.leftPana !== "" ||
+              cell.jodi !== "" ||
+              cell.rightPana !== "";
+
+            if (hasEntry) {
+              lastFilledRow = r;
+              lastFilledDay = d;
+            }
+          }
+        }
+
+        // Calculate next cell for Lock
+        let lockRow = -1;
+        let lockDay = -1;
+
+        if (lastFilledRow !== -1) {
+          if (lastFilledDay < 5) {
+            lockRow = lastFilledRow;
+            lockDay = lastFilledDay + 1;
+          } else {
+            lockRow = lastFilledRow + 1;
+            lockDay = 0;
+          }
+        } else {
+          lockRow = 0;
+          lockDay = 0;
+        }
+
+        if (lockRow >= validRows.length) {
+          validRows.push({
+            dateRange: "NEXT<br>WEEK",
+            days: Array.from({ length: 6 }, () => ({ leftPana: "", jodi: "", rightPana: "" }))
+          });
+        }
+
+        // Render Table HTML
+        let html = "";
+        for (let r = 0; r < validRows.length; r++) {
+          const rowObj = validRows[r];
+          const formattedDate = rowObj.dateRange.replace(/\s+to\s+/i, "<br>to<br>");
+
+          html += `<tr>`;
+          html += `<td class="date-cell">${formattedDate}</td>`;
+
+          for (let d = 0; d < 6; d++) {
+            const cell = rowObj.days[d];
+            const isAutoLockCell = (r === lockRow && d === lockDay);
+            const hasStar = cell.jodi.includes("*") || cell.leftPana.includes("*") || cell.rightPana.includes("*");
+
+            if (hasStar) {
+              // Show Red Star (*) when '*' is written in Sheet
+              const leftDisplay = cell.leftPana ? formatVerticalPana(cell.leftPana) : "*<br>*<br>*";
+              const jodiDisplay = cell.jodi ? (cell.jodi.includes("*") ? "**" : cell.jodi) : "**";
+              const rightDisplay = cell.rightPana ? formatVerticalPana(cell.rightPana) : "*<br>*<br>*";
+
+              html += `
+                <td class="red-star-cell">
+                  <div class="cell-container red">
+                    <div class="pana-left">${leftDisplay}</div>
+                    <div class="jodi-center">${jodiDisplay}</div>
+                    <div class="pana-right">${rightDisplay}</div>
+                  </div>
+                </td>
+              `;
+            } else if (isAutoLockCell) {
+              html += `
+                <td>
+                  <span class="moving-lock" title="Remove Lock" onclick="navigateTo('page-remove-lock')">🔒</span>
+                </td>
+              `;
+            } else if (!cell.leftPana && !cell.jodi && !cell.rightPana) {
+              html += `<td>-</td>`;
+            } else {
+              const colorClass = isRedJodi(cell.jodi) ? "red" : "blk";
+              html += `
+                <td>
+                  <div class="cell-container ${colorClass}">
+                    <div class="pana-left">${formatVerticalPana(cell.leftPana)}</div>
+                    <div class="jodi-center">${cell.jodi}</div>
+                    <div class="pana-right">${formatVerticalPana(cell.rightPana)}</div>
+                  </div>
+                </td>
+              `;
+            }
+          }
+          html += `</tr>`;
+        }
+
+        tbody.innerHTML = html;
+
+      } catch (error) {
+        console.error("Error fetching Google Sheet:", error);
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="padding: 20px; color: #cc0000; font-weight: bold;">
+              Data load nahi ho paya. Kripya check karein ki Google Sheet "Anyone with the link can view" par set hai.
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // Display chosen file name in upload box
+    function updateFileName(input) {
+      const label = document.getElementById("file-chosen-label");
+      if (input.files && input.files.length > 0) {
+        label.textContent = input.files[0].name;
+      } else {
+        label.textContent = "No file chosen";
+      }
+    }
+
+    // ==========================================
+    // CUSTOM NAVIGATION & BROWSER HISTORY CONTROLLER
+    // ==========================================
+    function showPage(pageId) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.getElementById(pageId).classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // Push state so mobile back button goes to previous internal page instead of exiting
+    function navigateTo(pageId) {
+      history.pushState({ page: pageId }, "", "#" + pageId);
+      showPage(pageId);
+    }
+
+    // Handle mobile/browser back button event
+    window.addEventListener("popstate", function(event) {
+      if (event.state && event.state.page) {
+        showPage(event.state.page);
+      } else {
+        showPage("page-chart");
+      }
+    });
+
+    function scrollToBottom() {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function submitRemoveLock(e) {
+      e.preventDefault();
+      navigateTo('page-charges');
+    }
+
+    let countdownInterval = null;
+    function submitPaymentInfo(e) {
+      e.preventDefault();
+      navigateTo('page-timer');
+
+      // Start 2-Minute (120 seconds) Countdown Timer
+      let totalSeconds = 120;
+      const clockDisplay = document.getElementById("countdown-clock");
+
+      if (countdownInterval) clearInterval(countdownInterval);
+
+      countdownInterval = setInterval(() => {
+        totalSeconds--;
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+        clockDisplay.textContent = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+
+        if (totalSeconds <= 0) {
+          clearInterval(countdownInterval);
+          navigateTo('page-success');
+        }
+      }, 1000);
+    }
+
+    function finishTimerSubmission() {
+      if (countdownInterval) clearInterval(countdownInterval);
+      navigateTo('page-success');
+    }
+
+    // Initialize default history state on load
+    window.addEventListener("DOMContentLoaded", () => {
+      history.replaceState({ page: "page-chart" }, "", "#page-chart");
+      loadChartData();
+    });
+  </script>
+</body>
+</html>
