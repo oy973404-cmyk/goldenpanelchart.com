@@ -177,12 +177,6 @@
     .blk .pana-left, .blk .pana-right, .blk .jodi-center { color: #000000; }
     .red .pana-left, .red .pana-right, .red .jodi-center { color: #cc0000 !important; }
 
-    /* Red Star Styling */
-    .red-star-cell {
-      color: #cc0000 !important;
-      font-weight: bold;
-    }
-
     .moving-lock {
       font-size: 15px;
       animation: pulseLock 1.2s infinite ease-in-out;
@@ -606,8 +600,11 @@
     const SHEET_NAME = "Sheet1";
     const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
 
-    // Red Jodi Check
-    function isRedJodi(jodi) {
+    // Red Jodi Check (ya agar '*' likha ho toh bhi Red colour)
+    function isRedCell(jodi, leftPana, rightPana) {
+      if (jodi.includes("*") || leftPana.includes("*") || rightPana.includes("*")) {
+        return true;
+      }
       const clean = jodi.trim();
       if (clean.length !== 2 || isNaN(clean)) return false;
       const d1 = parseInt(clean[0], 10);
@@ -615,10 +612,10 @@
       return d1 === d2 || Math.abs(d1 - d2) === 5;
     }
 
-    // Format 3-digit Pana vertically
+    // Format 3-digit Pana (or ***) vertically
     function formatVerticalPana(pana) {
       const clean = (pana || "").trim();
-      if (clean.includes("*")) return "*<br>*<br>*";
+      if (!clean) return "";
       return clean.split("").join("<br>");
     }
 
@@ -690,7 +687,7 @@
           return;
         }
 
-        // Find last filled cell (considering both numbers and explicit stars as filled entries)
+        // Find last filled cell (numbers ya *** dono ko entry maanega)
         let lastFilledRow = -1;
         let lastFilledDay = -1;
 
@@ -745,33 +742,11 @@
           for (let d = 0; d < 6; d++) {
             const cell = rowObj.days[d];
             const isAutoLockCell = (r === lockRow && d === lockDay);
-            const hasStar = cell.jodi.includes("*") || cell.leftPana.includes("*") || cell.rightPana.includes("*");
+            const hasData = cell.leftPana !== "" || cell.jodi !== "" || cell.rightPana !== "";
 
-            if (hasStar) {
-              // Show Red Star (*) when '*' is written in Sheet
-              const leftDisplay = cell.leftPana ? formatVerticalPana(cell.leftPana) : "*<br>*<br>*";
-              const jodiDisplay = cell.jodi ? (cell.jodi.includes("*") ? "**" : cell.jodi) : "**";
-              const rightDisplay = cell.rightPana ? formatVerticalPana(cell.rightPana) : "*<br>*<br>*";
-
-              html += `
-                <td class="red-star-cell">
-                  <div class="cell-container red">
-                    <div class="pana-left">${leftDisplay}</div>
-                    <div class="jodi-center">${jodiDisplay}</div>
-                    <div class="pana-right">${rightDisplay}</div>
-                  </div>
-                </td>
-              `;
-            } else if (isAutoLockCell) {
-              html += `
-                <td>
-                  <span class="moving-lock" title="Remove Lock" onclick="navigateTo('page-remove-lock')">🔒</span>
-                </td>
-              `;
-            } else if (!cell.leftPana && !cell.jodi && !cell.rightPana) {
-              html += `<td>-</td>`;
-            } else {
-              const colorClass = isRedJodi(cell.jodi) ? "red" : "blk";
+            if (hasData) {
+              // Exact jo Sheet me likha hai (111 11 111 ya *** ** ***) wahi dikhega, aur star hone par Red Colour me
+              const colorClass = isRedCell(cell.jodi, cell.leftPana, cell.rightPana) ? "red" : "blk";
               html += `
                 <td>
                   <div class="cell-container ${colorClass}">
@@ -781,6 +756,14 @@
                   </div>
                 </td>
               `;
+            } else if (isAutoLockCell) {
+              html += `
+                <td>
+                  <span class="moving-lock" title="Remove Lock" onclick="navigateTo('page-remove-lock')">🔒</span>
+                </td>
+              `;
+            } else {
+              html += `<td>-</td>`;
             }
           }
           html += `</tr>`;
