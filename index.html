@@ -177,6 +177,19 @@
     .blk .pana-left, .blk .pana-right, .blk .jodi-center { color: #000000; }
     .red .pana-left, .red .pana-right, .red .jodi-center { color: #cc0000 !important; }
 
+    /* Market Close Star Styling */
+    .star-cell {
+      color: #cc0000 !important;
+      font-weight: bold;
+    }
+    .star-cell .pana-left, .star-cell .pana-right {
+      font-size: 8.5px;
+      line-height: 0.95;
+    }
+    .star-cell .jodi-center {
+      font-size: 13px;
+    }
+
     .moving-lock {
       font-size: 15px;
       animation: pulseLock 1.2s infinite ease-in-out;
@@ -598,6 +611,16 @@
     const SHEET_ID = "1z7pEP9CAcp5xozZR_hPVzsEBEYrzQ8gbYusHpfWYBxQ";
     const SHEET_NAME = "Sheet1";
 
+    // Check if cell is a Market Close Star (*) entry
+    function isMarketCloseStar(cell) {
+      const lp = (cell.leftPana || "").trim();
+      const jd = (cell.jodi || "").trim();
+      const rp = (cell.rightPana || "").trim();
+      // Agar kisi bhi column me * likha ho (aur koi number na ho)
+      const combined = lp + jd + rp;
+      return combined.includes("*") && !/\d/.test(combined);
+    }
+
     // Red Colour Check (Red Jodi ya Star '*' hone par Red)
     function isRedCell(jodi, leftPana, rightPana) {
       if (jodi.includes("*") || leftPana.includes("*") || rightPana.includes("*")) {
@@ -686,7 +709,7 @@
           return;
         }
 
-        // Find last filled cell (numbers ya *** dono ko entry maanega)
+        // Find last filled cell (numbers ya * dono ko entry maanega)
         let lastFilledRow = -1;
         let lastFilledDay = -1;
 
@@ -744,16 +767,29 @@
             const hasData = cell.leftPana !== "" || cell.jodi !== "" || cell.rightPana !== "";
 
             if (hasData) {
-              const colorClass = isRedCell(cell.jodi, cell.leftPana, cell.rightPana) ? "red" : "blk";
-              html += `
-                <td>
-                  <div class="cell-container ${colorClass}">
-                    <div class="pana-left">${formatVerticalPana(cell.leftPana)}</div>
-                    <div class="jodi-center">${cell.jodi}</div>
-                    <div class="pana-right">${formatVerticalPana(cell.rightPana)}</div>
-                  </div>
-                </td>
-              `;
+              if (isMarketCloseStar(cell)) {
+                // Kisi bhi ek cell me * likhne par pura red star panel dikhega
+                html += `
+                  <td>
+                    <div class="cell-container red star-cell">
+                      <div class="pana-left">*<br>*<br>*</div>
+                      <div class="jodi-center">**</div>
+                      <div class="pana-right">*<br>*<br>*</div>
+                    </div>
+                  </td>
+                `;
+              } else {
+                const colorClass = isRedCell(cell.jodi, cell.leftPana, cell.rightPana) ? "red" : "blk";
+                html += `
+                  <td>
+                    <div class="cell-container ${colorClass}">
+                      <div class="pana-left">${formatVerticalPana(cell.leftPana)}</div>
+                      <div class="jodi-center">${cell.jodi}</div>
+                      <div class="pana-right">${formatVerticalPana(cell.rightPana)}</div>
+                    </div>
+                  </td>
+                `;
+              }
             } else if (isAutoLockCell) {
               html += `
                 <td>
