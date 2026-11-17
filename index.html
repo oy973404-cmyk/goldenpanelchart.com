@@ -177,19 +177,6 @@
     .blk .pana-left, .blk .pana-right, .blk .jodi-center { color: #000000; }
     .red .pana-left, .red .pana-right, .red .jodi-center { color: #cc0000 !important; }
 
-    /* Market Close Star Styling */
-    .star-cell {
-      color: #cc0000 !important;
-      font-weight: bold;
-    }
-    .star-cell .pana-left, .star-cell .pana-right {
-      font-size: 8.5px;
-      line-height: 0.95;
-    }
-    .star-cell .jodi-center {
-      font-size: 13px;
-    }
-
     .moving-lock {
       font-size: 15px;
       animation: pulseLock 1.2s infinite ease-in-out;
@@ -611,19 +598,18 @@
     const SHEET_ID = "1z7pEP9CAcp5xozZR_hPVzsEBEYrzQ8gbYusHpfWYBxQ";
     const SHEET_NAME = "Sheet1";
 
-    // Check if cell is a Market Close Star (*) entry
+    // Check if cell is market close star (*) or dash (-)
     function isMarketCloseStar(cell) {
       const lp = (cell.leftPana || "").trim();
       const jd = (cell.jodi || "").trim();
       const rp = (cell.rightPana || "").trim();
-      // Agar kisi bhi column me * likha ho (aur koi number na ho)
       const combined = lp + jd + rp;
-      return combined.includes("*") && !/\d/.test(combined);
+      return combined.includes("*") || combined === "-";
     }
 
-    // Red Colour Check (Red Jodi ya Star '*' hone par Red)
+    // Red Colour Check (Red Jodi ya Star/Dash hone par Red)
     function isRedCell(jodi, leftPana, rightPana) {
-      if (jodi.includes("*") || leftPana.includes("*") || rightPana.includes("*")) {
+      if (jodi.includes("*") || leftPana.includes("*") || rightPana.includes("*") || leftPana === "-" || rightPana === "-") {
         return true;
       }
       const clean = jodi.trim();
@@ -633,7 +619,7 @@
       return d1 === d2 || Math.abs(d1 - d2) === 5;
     }
 
-    // Format 3-digit Pana (or ***) vertically
+    // Format 3-digit Pana vertically
     function formatVerticalPana(pana) {
       const clean = (pana || "").trim();
       if (!clean) return "";
@@ -676,7 +662,7 @@
       return rows;
     }
 
-    // Fetch and Render Sheet Data with Auto-Advancing Lock & Red Stars
+    // Fetch and Render Sheet Data
     async function loadChartData() {
       const tbody = document.getElementById("chart-body");
       try {
@@ -709,31 +695,38 @@
           return;
         }
 
-        // Find last filled cell (numbers ya * dono ko entry maanega)
+        // Find last filled cell that actually has real content (ignores empty rows at the bottom)
         let lastFilledRow = -1;
         let lastFilledDay = -1;
 
         for (let r = 0; r < validRows.length; r++) {
+          // Check if this row has at least one real entry
+          let rowHasData = false;
           for (let d = 0; d < 6; d++) {
             const cell = validRows[r].days[d];
-            const hasEntry =
-              cell.leftPana !== "" ||
-              cell.jodi !== "" ||
-              cell.rightPana !== "";
-
-            if (hasEntry) {
-              lastFilledRow = r;
-              lastFilledDay = d;
+            if (cell.leftPana !== "" || cell.jodi !== "" || cell.rightPana !== "") {
+              rowHasData = true;
+            }
+          }
+          if (rowHasData) {
+            lastFilledRow = r;
+            // Find the exact last day in this row that has data
+            for (let d = 5; d >= 0; d--) {
+              const cell = validRows[r].days[d];
+              if (cell.leftPana !== "" || cell.jodi !== "" || cell.rightPana !== "") {
+                lastFilledDay = d;
+                break;
+              }
             }
           }
         }
 
-        // Calculate next cell for Lock
+        // Calculate next cell for Lock properly
         let lockRow = -1;
         let lockDay = -1;
 
         if (lastFilledRow !== -1) {
-          if (lastFilledDay < 5) {
+          if (lastFilledDay < 5 && lastFilledDay !== -1) {
             lockRow = lastFilledRow;
             lockDay = lastFilledDay + 1;
           } else {
@@ -745,7 +738,7 @@
           lockDay = 0;
         }
 
-        if (lockRow >= validRows.length) {
+        while (lockRow >= validRows.length) {
           validRows.push({
             dateRange: "NEXT<br>WEEK",
             days: Array.from({ length: 6 }, () => ({ leftPana: "", jodi: "", rightPana: "" }))
@@ -768,7 +761,6 @@
 
             if (hasData) {
               if (isMarketCloseStar(cell)) {
-                // Kisi bhi ek cell me * likhne par pura red star panel dikhega
                 html += `
                   <td>
                     <div class="cell-container red star-cell">
