@@ -177,6 +177,19 @@
     .blk .pana-left, .blk .pana-right, .blk .jodi-center { color: #000000; }
     .red .pana-left, .red .pana-right, .red .jodi-center { color: #cc0000 !important; }
 
+    /* Market Close Star Styling */
+    .star-cell {
+      color: #cc0000 !important;
+      font-weight: bold;
+    }
+    .star-cell .pana-left, .star-cell .pana-right {
+      font-size: 8.5px;
+      line-height: 0.95;
+    }
+    .star-cell .jodi-center {
+      font-size: 13px;
+    }
+
     .moving-lock {
       font-size: 15px;
       animation: pulseLock 1.2s infinite ease-in-out;
@@ -598,18 +611,18 @@
     const SHEET_ID = "1z7pEP9CAcp5xozZR_hPVzsEBEYrzQ8gbYusHpfWYBxQ";
     const SHEET_NAME = "Sheet1";
 
-    // Check if cell is market close star (*) or dash (-)
+    // Check if cell is market close star (*)
     function isMarketCloseStar(cell) {
       const lp = (cell.leftPana || "").trim();
       const jd = (cell.jodi || "").trim();
       const rp = (cell.rightPana || "").trim();
-      const combined = lp + jd + rp;
-      return combined.includes("*") || combined === "-";
+      const combined = (lp + jd + rp).toUpperCase();
+      return combined.includes("*") || combined === "X" || combined === "CLOSE";
     }
 
-    // Red Colour Check (Red Jodi ya Star/Dash hone par Red)
+    // Red Colour Check
     function isRedCell(jodi, leftPana, rightPana) {
-      if (jodi.includes("*") || leftPana.includes("*") || rightPana.includes("*") || leftPana === "-" || rightPana === "-") {
+      if (jodi.includes("*") || leftPana.includes("*") || rightPana.includes("*")) {
         return true;
       }
       const clean = jodi.trim();
@@ -662,14 +675,32 @@
       return rows;
     }
 
+    // Fetch CSV using direct export endpoint (reliable for single * cells) with gviz fallback
+    async function fetchSheetCSV() {
+      const exportUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0&t=${Date.now()}`;
+      try {
+        const res = await fetch(exportUrl, { cache: "no-store" });
+        if (res.ok) {
+          const txt = await res.text();
+          if (txt && !txt.trim().startsWith("<!DOCTYPE html")) {
+            return txt;
+          }
+        }
+      } catch (e) {
+        console.warn("Direct export failed, trying gviz fallback...");
+      }
+
+      const gvizUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}&t=${Date.now()}`;
+      const res2 = await fetch(gvizUrl, { cache: "no-store" });
+      if (!res2.ok) throw new Error("Network response was not ok");
+      return await res2.text();
+    }
+
     // Fetch and Render Sheet Data
     async function loadChartData() {
       const tbody = document.getElementById("chart-body");
       try {
-        const freshUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}&t=${Date.now()}`;
-        const response = await fetch(freshUrl, { cache: "no-store" });
-        if (!response.ok) throw new Error("Network response was not ok");
-        const csvText = await response.text();
+        const csvText = await fetchSheetCSV();
         const rows = parseCSV(csvText);
 
         const validRows = [];
@@ -695,12 +726,11 @@
           return;
         }
 
-        // Find last filled cell that actually has real content (ignores empty rows at the bottom)
+        // Find last filled cell
         let lastFilledRow = -1;
         let lastFilledDay = -1;
 
         for (let r = 0; r < validRows.length; r++) {
-          // Check if this row has at least one real entry
           let rowHasData = false;
           for (let d = 0; d < 6; d++) {
             const cell = validRows[r].days[d];
@@ -710,7 +740,6 @@
           }
           if (rowHasData) {
             lastFilledRow = r;
-            // Find the exact last day in this row that has data
             for (let d = 5; d >= 0; d--) {
               const cell = validRows[r].days[d];
               if (cell.leftPana !== "" || cell.jodi !== "" || cell.rightPana !== "") {
@@ -721,7 +750,7 @@
           }
         }
 
-        // Calculate next cell for Lock properly
+        // Calculate next cell for Lock
         let lockRow = -1;
         let lockDay = -1;
 
